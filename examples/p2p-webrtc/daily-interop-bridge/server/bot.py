@@ -9,12 +9,17 @@ import sys
 from dotenv import load_dotenv
 from loguru import logger
 
-from pipecat.frames.frames import InputAudioRawFrame, OutputAudioRawFrame, InputImageRawFrame, OutputImageRawFrame
+from pipecat.frames.frames import (
+    InputAudioRawFrame,
+    InputImageRawFrame,
+    OutputAudioRawFrame,
+    OutputImageRawFrame,
+)
 from pipecat.pipeline.parallel_pipeline import ParallelPipeline
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.runner import PipelineRunner
 from pipecat.pipeline.task import PipelineParams, PipelineTask
-from pipecat.processors.frame_processor import FrameProcessor, FrameDirection, Frame
+from pipecat.processors.frame_processor import Frame, FrameDirection, FrameProcessor
 from pipecat.transports.base_transport import TransportParams
 from pipecat.transports.network.small_webrtc import SmallWebRTCTransport
 from pipecat.transports.services.daily import DailyParams, DailyTransport
@@ -23,6 +28,7 @@ load_dotenv(override=True)
 
 logger.remove(0)
 logger.add(sys.stderr, level="DEBUG")
+
 
 class MirrorProcessor(FrameProcessor):
     async def process_frame(self, frame: Frame, direction: FrameDirection):
@@ -42,6 +48,7 @@ class MirrorProcessor(FrameProcessor):
             )
         else:
             await self.push_frame(frame, direction)
+
 
 async def run_bot(webrtc_connection):
     pipecat_transport = SmallWebRTCTransport(
